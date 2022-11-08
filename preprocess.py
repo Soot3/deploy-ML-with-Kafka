@@ -27,16 +27,17 @@ producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
                          json.dumps(x,default=str).encode('utf-8'))
 
 print('Initialized Kafka producer at {}'.format(dt.datetime.utcnow()))
-
-# add the schema for Kafka
-data = {'schema': {
-    'type': 'struct',
-    'fields': [{'type': 'string', 'optional': False, 'field': 'Message'
-            }, {'type': 'int', 'optional': False, 'field': 'Category'
-            }]
-    }, 'payload': {'Message': df_train['Message'],
-                'Category': df_train['Category']}}
+for i in df_train.index:
         
-producer.send(topic="preprocess",value=data)
+    # add the schema for Kafka
+    data = {'schema': {
+        'type': 'struct',
+        'fields': [{'type': 'string', 'optional': False, 'field': 'Message'
+                }, {'type': 'int', 'optional': False, 'field': 'Category'
+                }]
+        }, 'payload': {'Message': df_train['Message'][i],
+                    'Category': df_train['Category'][i]}}
+    print(data)        
+    producer.send(topic="test",value=data)
         
 print('Sent record to topic at time {}'.format(dt.datetime.utcnow()))
