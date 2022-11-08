@@ -8,7 +8,9 @@ import requests
 from kafka import KafkaProducer
 
 
-df = pd.read_csv(./spam.csv)
+df = pd.read_csv("spam.csv")
+
+print(df.head())
 
 # One hot encoding of Category label (spam:1, ham:0)
 df['Category'] = df['Category'].apply(lambda x:0 if x=='ham' else 1)
@@ -32,7 +34,7 @@ data = {'schema': {
     'fields': [{'type': 'string', 'optional': False, 'field': 'Message'
             }, {'type': 'int', 'optional': False, 'field': 'Category'
             }]
-    }, 'payload': {'Message': df_train['data'],
+    }, 'payload': {'Message': df_train['Message'],
                 'Category': df_train['Category']}}
         
 producer.send(topic="preprocess",value=data)
